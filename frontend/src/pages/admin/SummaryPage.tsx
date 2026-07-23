@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { getDailySummary } from '../../lib/api';
-import type { DailySummaryRow } from '../../types';
+import { getDailySummary, listAllOrders, exportOrdersToPdf } from '../../lib/api';
+import type { DailySummaryRow, Order } from '../../types';
 
 function todayStr() {
   const d = new Date();
@@ -10,13 +10,18 @@ function todayStr() {
 export default function SummaryPage() {
   const [date, setDate] = useState(todayStr());
   const [rows, setRows] = useState<DailySummaryRow[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
   const load = async (d: string) => {
     setLoading(true);
     try {
-      const data = await getDailySummary(d);
+      const [data, ordersData] = await Promise.all([
+        getDailySummary(d),
+        listAllOrders({ date: d }),
+      ]);
       setRows(data);
+      setOrders(ordersData.filter((o) => o.status !== 'cancelled'));
     } catch (e) {
       console.error(e);
     } finally {
@@ -53,7 +58,13 @@ export default function SummaryPage() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-3 gap-3 mb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+            <div className="bg-white rounded-lg border p-4">
+              <div className="text-xs text-gray-500 mb-1">订单数</div>
+              <div className="text-2xl font-bold text-gray-900">
+                {orders.length}
+              </div>
+            </div>
             <div className="bg-white rounded-lg border p-4">
               <div className="text-xs text-gray-500 mb-1">菜品品类</div>
               <div className="text-2xl font-bold text-gray-900">
@@ -73,6 +84,17 @@ export default function SummaryPage() {
               </div>
             </div>
           </div>
+
+          {orders.length > 0 && (
+            <div className="flex justify-end mb-3">
+              <button
+                onClick={() => exportOrdersToPdf(orders, date)}
+                className="px-3 py-1.5 bg-white border text-gray-700 rounded-lg text-sm hover:bg-gray-50"
+              >
+                导出当日 PDF
+              </button>
+            </div>
+          )}
 
           {rows.length === 0 ? (
             <div className="bg-white rounded-lg border p-12 text-center text-gray-500 text-sm">
