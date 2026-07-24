@@ -12,11 +12,17 @@ import { isWithinTimeWindow } from '../lib/api';
 
 function todayStr() {
   const d = new Date();
-  // 使用本地时区日期
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
   return `${y}-${m}-${day}`;
+}
+
+// 分类对应汉字
+function categoryChar(c: string | undefined) {
+  if (c === '飲品') return '飲';
+  if (c === '套餐') return '膳';
+  return '肴';
 }
 
 export default function OrderPage() {
@@ -128,44 +134,57 @@ export default function OrderPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20 text-gray-500">
-        加载中…
+      <div className="flex items-center justify-center py-20 guo-loading">
+        請 稍 候 …
       </div>
     );
   }
 
   return (
     <div>
-      <div className="mb-4">
-        <h2 className="text-lg font-bold text-gray-900">
-          今日订餐 · {today}
+      {/* 页面标题 */}
+      <div className="mb-6 text-center relative">
+        <h2 className="text-2xl guo-title" style={{ letterSpacing: '0.3em' }}>
+          今 · 日 · 訂 · 餐
         </h2>
-        <p className="text-xs text-gray-500 mt-1">
-          订餐时间：{startTime} - {endTime}
+        <div className="guo-pattern-divider my-3">❖ ❖ ❖</div>
+        <p className="text-xs" style={{
+          color: 'var(--color-sandalwood)',
+          letterSpacing: '0.15em',
+        }}>
+          {today} · 訂餐時辰：{startTime} — {endTime}
         </p>
       </div>
 
       {error && (
-        <div className="mb-4 text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">
+        <div className="mb-4 guo-error px-4 py-3 text-sm" style={{ letterSpacing: '0.05em' }}>
           {error}
         </div>
       )}
       {success && (
-        <div className="mb-4 text-sm text-green-700 bg-green-50 px-3 py-2 rounded-lg">
+        <div className="mb-4 guo-success px-4 py-3 text-sm" style={{ letterSpacing: '0.05em' }}>
           {success}
         </div>
       )}
 
       {!published && (
-        <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg px-4 py-6 text-center">
-          <p className="text-lg mb-1">🍽️ 今天还没发布菜单</p>
-          <p className="text-sm">请联系管理员发布今日菜单</p>
+        <div className="guo-card p-8 text-center" style={{ borderRadius: 2 }}>
+          <div className="text-5xl mb-3" style={{ color: 'var(--color-golden)' }}>✦</div>
+          <p className="text-lg guo-title mb-2" style={{ letterSpacing: '0.2em' }}>
+            今 · 日 · 未 · 開 · 膳
+          </p>
+          <p className="text-sm" style={{
+            color: 'var(--color-sandalwood)',
+            letterSpacing: '0.15em',
+          }}>
+            請聯繫管理員發布今日菜單
+          </p>
         </div>
       )}
 
       {published && alreadyOrdered && (
-        <div className="bg-green-50 border border-green-200 text-green-800 rounded-lg px-4 py-3 mb-4 text-sm">
-          ✓ 今日已下单，每天仅允许一次订餐。可前往"我的订单"查看。
+        <div className="guo-success px-4 py-3 mb-4 text-sm" style={{ letterSpacing: '0.1em' }}>
+          ✓ 今 · 日 · 已 · 下 · 單 · 每 · 日 · 僅 · 許 · 一 · 次 · 可前往「我的訂單」查看。
         </div>
       )}
 
@@ -179,59 +198,107 @@ export default function OrderPage() {
               return (
                 <div
                   key={it.id}
-                  className="bg-white rounded-lg border p-3 sm:p-4 flex items-center gap-3"
+                  className="guo-card p-3 sm:p-4 flex items-center gap-3 relative"
+                  style={{ borderRadius: 2 }}
                 >
+                  {/* 菜品图片 / 占位 */}
                   {dish.image_url ? (
-                    <img
-                      src={dish.image_url}
-                      alt={dish.name}
-                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover shrink-0 bg-gray-100"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                      }}
-                    />
+                    <div className="guo-image-frame shrink-0 overflow-hidden" style={{ width: 72, height: 72 }}>
+                      <img
+                        src={dish.image_url}
+                        alt={dish.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                    </div>
                   ) : (
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-gradient-to-br from-orange-100 to-red-100 flex items-center justify-center text-2xl shrink-0">
-                      {dish.category === '饮品' ? '🥤' : dish.category === '套餐' ? '🍱' : '🍽️'}
+                    <div
+                      className="guo-seal shrink-0"
+                      style={{
+                        width: 72,
+                        height: 72,
+                        fontSize: '2rem',
+                        borderRadius: 2,
+                        transform: 'none',
+                      }}
+                    >
+                      {categoryChar(dish.category)}
                     </div>
                   )}
+
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-2">
-                      <h3 className="font-medium text-gray-900 truncate">
+                    <div className="flex items-baseline gap-2 mb-1">
+                      <h3 className="font-semibold truncate guo-title" style={{ letterSpacing: '0.1em' }}>
                         {dish.name}
                       </h3>
-                      <span className="text-xs px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded">
+                      <span className="guo-tag" style={{
+                        color: 'var(--color-sandalwood)',
+                        borderColor: 'rgba(107, 68, 35, 0.4)',
+                      }}>
                         {dish.category}
                       </span>
                     </div>
                     {dish.description && (
-                      <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                      <p className="text-xs line-clamp-2 mb-2" style={{
+                        color: 'var(--color-ink-light)',
+                        letterSpacing: '0.05em',
+                      }}>
                         {dish.description}
                       </p>
                     )}
-                    <div className="flex items-baseline gap-1 mt-2">
-                      <span className="text-orange-600 font-semibold">
+                    <div className="flex items-baseline gap-1">
+                      <span className="guo-price text-lg">
                         ¥{it.price_snapshot.toFixed(2)}
                       </span>
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs" style={{
+                        color: 'var(--color-sandalwood)',
+                        letterSpacing: '0.1em',
+                      }}>
                         / {dish.unit}
                       </span>
                     </div>
                   </div>
+
+                  {/* 数量控制 */}
                   <div className="flex items-center gap-2 shrink-0">
                     <button
                       onClick={() => updateQty(it, -1)}
                       disabled={qty === 0}
-                      className="w-8 h-8 rounded-full border border-gray-300 text-gray-600 flex items-center justify-center disabled:opacity-30 hover:bg-gray-50"
+                      className="w-8 h-8 flex items-center justify-center transition-colors disabled:opacity-30"
+                      style={{
+                        border: '1px solid var(--color-sandalwood)',
+                        color: 'var(--color-sandalwood)',
+                        backgroundColor: 'rgba(245, 239, 230, 0.6)',
+                      }}
+                      onMouseEnter={(e) => {
+                        if (qty > 0) {
+                          e.currentTarget.style.borderColor = 'var(--color-vermilion)';
+                          e.currentTarget.style.color = 'var(--color-vermilion)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--color-sandalwood)';
+                        e.currentTarget.style.color = 'var(--color-sandalwood)';
+                      }}
                     >
                       −
                     </button>
-                    <span className="w-6 text-center font-medium">
-                      {qty}
-                    </span>
+                    <span className="w-6 text-center guo-title">{qty}</span>
                     <button
                       onClick={() => updateQty(it, 1)}
-                      className="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center hover:bg-orange-600"
+                      className="w-8 h-8 flex items-center justify-center transition-colors"
+                      style={{
+                        backgroundColor: 'var(--color-vermilion)',
+                        color: 'var(--color-paper)',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = 'var(--color-vermilion-light)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'var(--color-vermilion)';
+                      }}
                     >
                       +
                     </button>
@@ -242,33 +309,51 @@ export default function OrderPage() {
           </div>
 
           {items.length === 0 && (
-            <div className="text-center py-12 text-gray-500 text-sm">
-              今日菜单暂无菜品
+            <div className="guo-card p-12 text-center" style={{
+              color: 'var(--color-sandalwood)',
+              letterSpacing: '0.15em',
+              borderRadius: 2,
+            }}>
+              今 · 日 · 菜 · 單 · 暫 · 無 · 菜 · 品
             </div>
           )}
 
+          {/* 底部订单栏 */}
           {cartList.length > 0 && (
-            <div className="sticky bottom-0 mt-4 bg-white border rounded-lg shadow-lg p-3 sm:p-4">
-              <div className="flex items-center justify-between mb-3">
+            <div
+              className="guo-card sticky bottom-0 mt-5 p-3 sm:p-4"
+              style={{
+                borderRadius: 2,
+                boxShadow: '0 -4px 12px rgba(44, 36, 22, 0.15), 0 2px 6px rgba(44, 36, 22, 0.12)',
+              }}
+            >
+              <div className="flex items-center justify-between mb-2">
                 <div>
-                  <span className="text-sm text-gray-600">
-                    已选 {cartList.reduce((s, i) => s + i.quantity, 0)} 件
+                  <span className="text-xs" style={{
+                    color: 'var(--color-ink-light)',
+                    letterSpacing: '0.1em',
+                  }}>
+                    已選 {cartList.reduce((s, i) => s + i.quantity, 0)} 件
                   </span>
-                  <div className="text-xl font-bold text-orange-600">
+                  <div className="guo-price text-2xl">
                     ¥{total.toFixed(2)}
                   </div>
                 </div>
                 <button
                   onClick={() => setShowConfirm(true)}
                   disabled={!withinWindow}
-                  className="px-6 py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="guo-btn-primary px-6 py-2.5"
+                  style={{ letterSpacing: '0.2em' }}
                 >
-                  {!withinWindow ? '非订餐时段' : '提交订单'}
+                  {!withinWindow ? '非訂餐時辰' : '提 · 交 · 訂 · 單'}
                 </button>
               </div>
               {!withinWindow && (
-                <p className="text-xs text-orange-600">
-                  当前不在订餐时段（{startTime} - {endTime}）
+                <p className="text-xs" style={{
+                  color: 'var(--color-vermilion)',
+                  letterSpacing: '0.1em',
+                }}>
+                  當前不在訂餐時辰（{startTime} - {endTime}）
                 </p>
               )}
             </div>
@@ -276,24 +361,27 @@ export default function OrderPage() {
         </>
       )}
 
+      {/* 确认订单模态框 */}
       <Modal
         open={showConfirm}
         onClose={() => setShowConfirm(false)}
-        title="确认订单"
+        title="確 · 認 · 訂 · 單"
         footer={
           <>
             <button
               onClick={() => setShowConfirm(false)}
-              className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900"
+              className="guo-btn-ghost px-4 py-2 text-sm"
+              style={{ letterSpacing: '0.15em' }}
             >
-              返回修改
+              返 · 回
             </button>
             <button
               onClick={handleSubmit}
               disabled={submitting}
-              className="px-4 py-2 text-sm bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:opacity-50"
+              className="guo-btn-primary px-4 py-2 text-sm"
+              style={{ letterSpacing: '0.15em' }}
             >
-              {submitting ? '提交中…' : '确认下单'}
+              {submitting ? '提 · 交 · 中 …' : '確 · 認 · 下 · 單'}
             </button>
           </>
         }
@@ -302,35 +390,49 @@ export default function OrderPage() {
           {cartList.map((it) => (
             <div
               key={it.dish_id}
-              className="flex items-center justify-between text-sm py-1.5 border-b border-gray-100 last:border-0"
+              className="flex items-center justify-between text-sm py-2"
+              style={{
+                borderBottom: '1px dashed rgba(107, 68, 35, 0.2)',
+                letterSpacing: '0.05em',
+              }}
             >
-              <span className="text-gray-900">
+              <span className="guo-title">
                 {it.dish_name}{' '}
-                <span className="text-gray-500">×{it.quantity}</span>
+                <span style={{ color: 'var(--color-ink-light)' }}>×{it.quantity}</span>
               </span>
-              <span className="text-orange-600 font-medium">
+              <span className="guo-price">
                 ¥{(it.dish_price * it.quantity).toFixed(2)}
               </span>
             </div>
           ))}
         </div>
         <div>
-          <label className="block text-xs text-gray-600 mb-1">备注（可选）</label>
+          <label className="block text-xs mb-2" style={{
+            color: 'var(--color-ink-light)',
+            letterSpacing: '0.1em',
+          }}>
+            備註（可選）
+          </label>
           <input
             type="text"
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="如：少放辣、不要香菜"
-            className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+            className="guo-input w-full px-3 py-2 text-sm"
             maxLength={100}
           />
         </div>
-        <div className="mt-4 pt-4 border-t flex items-center justify-between">
-          <span className="text-sm text-gray-600">
+        <div className="mt-5 pt-4 flex items-center justify-between" style={{
+          borderTop: '1px solid var(--color-sandalwood)',
+        }}>
+          <span className="text-sm" style={{
+            color: 'var(--color-ink-light)',
+            letterSpacing: '0.1em',
+          }}>
             共 {cartList.reduce((s, i) => s + i.quantity, 0)} 件
           </span>
-          <span className="text-lg font-bold text-orange-600">
-            合计 ¥{total.toFixed(2)}
+          <span className="guo-price text-xl">
+            合計 ¥{total.toFixed(2)}
           </span>
         </div>
       </Modal>

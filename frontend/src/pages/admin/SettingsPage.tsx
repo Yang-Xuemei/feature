@@ -45,75 +45,113 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20 text-gray-500">
-        加载中…
+      <div className="flex items-center justify-center py-20 guo-loading">
+        請 稍 候 …
       </div>
     );
   }
 
   return (
     <div>
-      <h2 className="text-lg font-bold text-gray-900 mb-4">系统配置</h2>
+      {/* 标题 */}
+      <div className="mb-6 text-center">
+        <h2 className="text-2xl guo-title" style={{ letterSpacing: '0.3em' }}>
+          系 · 統 · 配 · 置
+        </h2>
+        <div className="guo-pattern-divider my-3">❖ ❖ ❖</div>
+      </div>
 
       {error && (
-        <div className="mb-4 text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">
+        <div className="mb-4 guo-error px-4 py-3 text-sm" style={{ letterSpacing: '0.05em' }}>
           {error}
         </div>
       )}
       {message && (
-        <div className="mb-4 text-sm text-green-700 bg-green-50 px-3 py-2 rounded-lg">
+        <div className="mb-4 guo-success px-4 py-3 text-sm" style={{ letterSpacing: '0.05em' }}>
           {message}
         </div>
       )}
 
-      <div className="bg-white rounded-lg border p-5">
-        <h3 className="font-medium text-gray-900 mb-4">订餐时间窗</h3>
-        <p className="text-sm text-gray-500 mb-4">
-          仅在此时间段内，用户可提交订单。修改后立即对所有用户生效。
-        </p>
+      {/* 订餐时间窗 */}
+      <div className="guo-card p-5 relative" style={{ borderRadius: 2 }}>
+        <div className="mb-4 pb-3" style={{ borderBottom: '1px dashed rgba(107, 68, 35, 0.3)' }}>
+          <h3 className="guo-title text-lg mb-2" style={{ letterSpacing: '0.2em' }}>
+            訂 · 餐 · 時 · 辰
+          </h3>
+          <p className="text-sm" style={{
+            color: 'var(--color-ink-light)',
+            letterSpacing: '0.08em',
+          }}>
+            僅在此時間段內，用戶可提交訂單。修改後立即對所有用戶生效。
+          </p>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm text-gray-700 mb-1">
-              开始时间
+            <label className="block text-sm mb-2" style={{
+              color: 'var(--color-ink-light)',
+              letterSpacing: '0.1em',
+            }}>
+              開 · 始 · 時 · 辰
             </label>
             <input
               type="time"
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg text-sm"
+              className="guo-input w-full px-3 py-2 text-sm"
             />
           </div>
           <div>
-            <label className="block text-sm text-gray-700 mb-1">
-              截止时间
+            <label className="block text-sm mb-2" style={{
+              color: 'var(--color-ink-light)',
+              letterSpacing: '0.1em',
+            }}>
+              截 · 止 · 時 · 辰
             </label>
             <input
               type="time"
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)}
-              className="w-full px-3 py-2 border rounded-lg text-sm"
+              className="guo-input w-full px-3 py-2 text-sm"
             />
           </div>
         </div>
-        <div className="mt-5 flex justify-end">
+
+        <div className="mt-5 flex justify-end" style={{ borderTop: '1px dashed rgba(107, 68, 35, 0.3)', paddingTop: '1rem' }}>
           <button
             onClick={handleSave}
             disabled={saving}
-            className="px-5 py-2 bg-orange-500 text-white rounded-lg text-sm hover:bg-orange-600 disabled:opacity-50"
+            className="guo-btn-primary px-6 py-2"
+            style={{ letterSpacing: '0.2em' }}
           >
-            {saving ? '保存中…' : '保存配置'}
+            {saving ? '保 · 存 · 中 …' : '保 · 存 · 配 · 置'}
           </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg border p-5 mt-4">
-        <h3 className="font-medium text-gray-900 mb-3">规则说明</h3>
-        <ul className="text-sm text-gray-600 space-y-2">
-          <li>• 同一用户每天仅允许提交一次订单</li>
-          <li>• 订单状态流转：已提交 → 已确认 → 已完成</li>
-          <li>• 已取消订单仅管理员有权操作</li>
-          <li>• 菜品库中被历史订单引用的菜品不会物理删除，仅可禁用</li>
-          <li>• 下单时价格会快照到订单中，后续修改菜品库价格不影响历史订单</li>
+      {/* 规则说明 */}
+      <div className="guo-card p-5 mt-4 relative" style={{ borderRadius: 2 }}>
+        <div className="mb-4 pb-3" style={{ borderBottom: '1px dashed rgba(107, 68, 35, 0.3)' }}>
+          <h3 className="guo-title text-lg" style={{ letterSpacing: '0.2em' }}>
+            規 · 則 · 說 · 明
+          </h3>
+        </div>
+        <ul className="space-y-3 text-sm" style={{
+          color: 'var(--color-ink)',
+          letterSpacing: '0.08em',
+        }}>
+          {[
+            '同一用户每日仅允许提交一次订单',
+            '订单状态流转：已呈 → 已准 → 已毕',
+            '已撤订单仅管理员有权操作',
+            '菜品库中被历史订单引用的菜品不会物理删除，仅可禁用',
+            '下单时价格会快照到订单中，后续修改菜品库价格不影响历史订单',
+          ].map((rule, i) => (
+            <li key={i} className="flex items-start gap-2">
+              <span className="shrink-0 mt-0.5" style={{ color: 'var(--color-golden-dark)' }}>◈</span>
+              <span>{rule}</span>
+            </li>
+          ))}
         </ul>
       </div>
     </div>

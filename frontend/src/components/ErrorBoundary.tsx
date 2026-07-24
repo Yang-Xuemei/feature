@@ -67,47 +67,64 @@ export class ErrorBoundary extends Component<Props, State> {
       <div
         style={{
           padding: 24,
-          fontFamily: 'system-ui, sans-serif',
+          fontFamily: '"ZCOOL XiaoWei", "Noto Serif SC", serif',
           maxWidth: 900,
           margin: '40px auto',
+          backgroundColor: '#F5EFE6',
+          minHeight: '100vh',
         }}
       >
-        <h1 style={{ fontSize: 18, marginBottom: 8, color: '#b91c1c' }}>
-          应用出错了 / Something went wrong
+        <h1 style={{
+          fontSize: 22,
+          marginBottom: 8,
+          color: '#8B2635',
+          letterSpacing: '0.2em',
+          fontWeight: 700,
+          borderBottom: '1px solid #6B4423',
+          paddingBottom: 8,
+        }}>
+          應 · 用 · 有 · 誤
         </h1>
-        <p style={{ margin: '0 0 12px', color: '#6b7280', fontSize: 13 }}>
-          复制下面的错误信息，粘贴到对话里，我来帮你修复。
-          <br />
-          Copy the error below and paste it into the chat to get it fixed.
+        <p style={{
+          margin: '8px 0 16px',
+          color: '#4A3F2A',
+          fontSize: 14,
+          letterSpacing: '0.08em',
+        }}>
+          復制以下錯誤信息 · 粘貼到對話裡 · 吾將為君修之。
         </p>
         <button
           type="button"
           onClick={this.handleCopy}
           style={{
             marginBottom: 12,
-            padding: '6px 14px',
+            padding: '8px 18px',
             fontSize: 14,
             cursor: 'pointer',
-            borderRadius: 6,
-            border: '1px solid #d1d5db',
-            background: copied ? '#16a34a' : '#111827',
-            color: '#ffffff',
+            borderRadius: 2,
+            border: '1px solid #6B1D28',
+            background: copied ? '#5B7F62' : '#8B2635',
+            color: '#F5EFE6',
+            letterSpacing: '0.15em',
+            fontWeight: 600,
+            fontFamily: 'inherit',
           }}
         >
-          {copied ? '已复制 / Copied' : '复制错误信息 / Copy error'}
+          {copied ? '已 · 復制' : '復制錯誤信息'}
         </button>
         <pre
           style={{
             whiteSpace: 'pre-wrap',
             wordBreak: 'break-word',
-            background: '#f9fafb',
-            border: '1px solid #e5e7eb',
-            borderRadius: 6,
-            padding: 12,
+            background: '#E8DCC4',
+            border: '1px solid #6B4423',
+            borderRadius: 2,
+            padding: 16,
             fontSize: 12,
-            color: '#111827',
+            color: '#2C2416',
             maxHeight: 400,
             overflow: 'auto',
+            fontFamily: 'monospace',
           }}
         >
           {this.buildReport()}

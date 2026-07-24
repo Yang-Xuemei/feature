@@ -17,8 +17,8 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
   const { userId, loading } = useAuth();
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500">
-        加载中…
+      <div className="min-h-screen flex items-center justify-center guo-loading">
+        請 稍 候 …
       </div>
     );
   }
@@ -30,8 +30,8 @@ function RequireAdmin({ children }: { children: React.ReactNode }) {
   const { userId, isAdmin, loading } = useAuth();
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500">
-        加载中…
+      <div className="min-h-screen flex items-center justify-center guo-loading">
+        請 稍 候 …
       </div>
     );
   }
@@ -44,8 +44,8 @@ function RootRedirect() {
   const { userId, isAdmin, loading } = useAuth();
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500">
-        加载中…
+      <div className="min-h-screen flex items-center justify-center guo-loading">
+        請 稍 候 …
       </div>
     );
   }

@@ -1,1 +1,349 @@
 @import "tailwindcss";
+
+/* ============================================================
+ * 国风复古设计系统 — 企业订餐系统
+ * ============================================================ */
+
+@theme {
+  /* —— 中国传统色 —— */
+  --color-paper: #F5EFE6;          /* 宣纸白 */
+  --color-paper-dark: #E8DCC4;     /* 陈旧纸张 */
+  --color-ink: #2C2416;            /* 墨黑 */
+  --color-ink-light: #4A3F2A;      /* 淡墨 */
+  --color-vermilion: #8B2635;      /* 朱砂红（主色） */
+  --color-vermilion-dark: #6B1D28; /* 暗朱砂 */
+  --color-vermilion-light: #B84957;/* 浅朱砂 */
+  --color-celadon: #5B7F62;        /* 青瓷绿 */
+  --color-celadon-dark: #3E5A44;   /* 深青瓷 */
+  --color-celadon-light: #8BAF8F;  /* 浅青瓷 */
+  --color-golden: #C49A6C;         /* 琉璃黄 */
+  --color-golden-dark: #9A7748;    /* 深琉璃黄 */
+  --color-sandalwood: #6B4423;     /* 檀木褐 */
+  --color-indigo: #16425B;         /* 靛蓝 */
+  --color-lotus: #8E7CC3;          /* 藕荷紫 */
+
+  --font-serif: "ZCOOL XiaoWei", "Noto Serif SC", "STKaiti", "KaiTi", "STSong", "SimSun", serif;
+}
+
+/* —— 全局字体与背景 —— */
+html,
+body,
+#root {
+  min-height: 100vh;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-serif);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* —— 纸张纹理背景（全局）—— */
+body {
+  background-image:
+    radial-gradient(ellipse at top left, rgba(196, 154, 108, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom right, rgba(139, 38, 53, 0.05) 0%, transparent 50%),
+    repeating-linear-gradient(
+      45deg,
+      transparent 0 40px,
+      rgba(107, 68, 35, 0.015) 40px 41px
+    );
+}
+
+/* —— 衬线字体全局默认 —— */
+* {
+  font-family: var(--font-serif);
+}
+
+/* —— 国风边框：回纹装饰 —— */
+.guo-border {
+  position: relative;
+  border: 1px solid var(--color-sandalwood);
+  background-color: rgba(245, 239, 230, 0.7);
+}
+.guo-border::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border: 1px solid rgba(107, 68, 35, 0.25);
+  pointer-events: none;
+}
+
+/* —— 双层边框卡片 —— */
+.guo-card {
+  position: relative;
+  background: linear-gradient(180deg, rgba(245, 239, 230, 0.95) 0%, rgba(232, 220, 196, 0.8) 100%);
+  border: 1px solid var(--color-sandalwood);
+  box-shadow:
+    inset 0 0 0 1px rgba(245, 239, 230, 0.5),
+    0 2px 6px rgba(44, 36, 22, 0.12);
+}
+.guo-card::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(107, 68, 35, 0.35);
+  pointer-events: none;
+  border-radius: 2px;
+}
+
+/* —— 印章效果 —— */
+.guo-seal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-vermilion);
+  border: 2px solid var(--color-vermilion);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  transform: rotate(-4deg);
+  box-shadow: inset 0 0 0 1px rgba(139, 38, 53, 0.3);
+}
+
+/* —— 标题文字（带墨迹感）—— */
+.guo-title {
+  color: var(--color-ink);
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  text-shadow: 0 1px 0 rgba(196, 154, 108, 0.2);
+}
+
+/* —— 国风按钮 —— */
+.guo-btn-primary {
+  background: linear-gradient(180deg, var(--color-vermilion) 0%, var(--color-vermilion-dark) 100%);
+  color: var(--color-paper);
+  border: 1px solid var(--color-vermilion-dark);
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 1px 2px rgba(107, 29, 40, 0.3);
+  transition: all 0.2s ease;
+}
+.guo-btn-primary:hover:not(:disabled) {
+  background: linear-gradient(180deg, var(--color-vermilion-light) 0%, var(--color-vermilion) 100%);
+}
+.guo-btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.guo-btn-secondary {
+  background: linear-gradient(180deg, rgba(245, 239, 230, 0.95) 0%, rgba(232, 220, 196, 0.9) 100%);
+  color: var(--color-sandalwood);
+  border: 1px solid var(--color-sandalwood);
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+}
+.guo-btn-secondary:hover:not(:disabled) {
+  background: linear-gradient(180deg, #FFFBF2 0%, rgba(245, 239, 230, 0.95) 100%);
+  color: var(--color-vermilion);
+  border-color: var(--color-vermilion);
+}
+
+.guo-btn-ghost {
+  background: transparent;
+  color: var(--color-ink-light);
+  border: 1px dashed rgba(107, 68, 35, 0.4);
+  transition: all 0.2s ease;
+}
+.guo-btn-ghost:hover {
+  color: var(--color-vermilion);
+  border-color: var(--color-vermilion);
+}
+
+/* —— 国风输入框 —— */
+.guo-input {
+  background-color: rgba(255, 251, 242, 0.7);
+  border: 1px solid rgba(107, 68, 35, 0.4);
+  color: var(--color-ink);
+  transition: all 0.2s ease;
+  font-family: var(--font-serif);
+}
+.guo-input::placeholder {
+  color: rgba(74, 63, 42, 0.5);
+}
+.guo-input:focus {
+  outline: none;
+  border-color: var(--color-vermilion);
+  box-shadow: 0 0 0 2px rgba(139, 38, 53, 0.15);
+  background-color: rgba(255, 251, 242, 1);
+}
+
+/* —— 国风链接/文字按钮 —— */
+.guo-link {
+  color: var(--color-vermilion);
+  transition: color 0.2s;
+  text-decoration: none;
+}
+.guo-link:hover {
+  color: var(--color-vermilion-dark);
+  text-decoration: underline;
+}
+
+/* —— 水墨分隔线 —— */
+.guo-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(107, 68, 35, 0.5) 20%,
+    rgba(107, 68, 35, 0.5) 80%,
+    transparent 100%
+  );
+  border: 0;
+}
+
+/* —— 标签/徽标 —— */
+.guo-tag {
+  display: inline-block;
+  padding: 1px 8px;
+  font-size: 12px;
+  border: 1px solid;
+  letter-spacing: 0.05em;
+  background: rgba(245, 239, 230, 0.6);
+}
+
+/* —— 导航 tab —— */
+.guo-tab {
+  padding: 6px 14px;
+  font-size: 14px;
+  white-space: nowrap;
+  color: var(--color-ink-light);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  letter-spacing: 0.08em;
+}
+.guo-tab:hover {
+  color: var(--color-vermilion);
+}
+.guo-tab-active {
+  color: var(--color-vermilion);
+  border-bottom-color: var(--color-vermilion);
+  font-weight: 600;
+}
+
+/* —— 价格色 —— */
+.guo-price {
+  color: var(--color-vermilion);
+  font-weight: 700;
+}
+
+/* —— 加载提示 —— */
+.guo-loading {
+  color: var(--color-sandalwood);
+  letter-spacing: 0.15em;
+}
+
+/* —— 错误提示 —— */
+.guo-error {
+  background-color: rgba(139, 38, 53, 0.08);
+  border: 1px solid rgba(139, 38, 53, 0.35);
+  color: var(--color-vermilion-dark);
+}
+
+/* —— 成功提示 —— */
+.guo-success {
+  background-color: rgba(91, 127, 98, 0.1);
+  border: 1px solid rgba(91, 127, 98, 0.4);
+  color: var(--color-celadon-dark);
+}
+
+/* —— 表格 —— */
+.guo-table-head {
+  background: linear-gradient(180deg, rgba(232, 220, 196, 0.6) 0%, rgba(232, 220, 196, 0.4) 100%);
+  color: var(--color-ink);
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid var(--color-sandalwood);
+}
+
+.guo-table-row {
+  border-bottom: 1px dashed rgba(107, 68, 35, 0.25);
+  transition: background-color 0.2s;
+}
+.guo-table-row:hover {
+  background-color: rgba(196, 154, 108, 0.1);
+}
+
+/* —— 滚动条国风化 —— */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(232, 220, 196, 0.4);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(107, 68, 35, 0.45);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 38, 53, 0.6);
+}
+
+/* —— 云纹装饰角 —— */
+.guo-corner::before,
+.guo-corner::after {
+  content: "❋";
+  position: absolute;
+  color: rgba(196, 154, 108, 0.5);
+  font-size: 14px;
+  pointer-events: none;
+}
+.guo-corner::before {
+  top: 6px;
+  left: 8px;
+}
+.guo-corner::after {
+  bottom: 6px;
+  right: 8px;
+}
+
+/* —— 渐变文字 —— */
+.guo-gradient-text {
+  background: linear-gradient(135deg, var(--color-vermilion) 0%, var(--color-golden-dark) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* —— 装饰性花纹分割 —— */
+.guo-pattern-divider {
+  text-align: center;
+  color: rgba(107, 68, 35, 0.4);
+  font-size: 14px;
+  letter-spacing: 0.3em;
+  user-select: none;
+}
+
+/* —— 模态框背景 —— */
+.guo-modal-backdrop {
+  background-color: rgba(44, 36, 22, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+/* —— 图片容器 —— */
+.guo-image-frame {
+  border: 1px solid var(--color-sandalwood);
+  box-shadow: 0 0 0 3px rgba(245, 239, 230, 0.6), 0 2px 4px rgba(44, 36, 22, 0.15);
+}
+
+/* —— 订单状态标签 —— */
+.guo-status-submitted {
+  color: var(--color-indigo);
+  border-color: var(--color-indigo);
+  background-color: rgba(22, 66, 91, 0.08);
+}
+.guo-status-confirmed {
+  color: var(--color-golden-dark);
+  border-color: var(--color-golden-dark);
+  background-color: rgba(196, 154, 108, 0.15);
+}
+.guo-status-completed {
+  color: var(--color-celadon-dark);
+  border-color: var(--color-celadon-dark);
+  background-color: rgba(91, 127, 98, 0.12);
+}
+.guo-status-cancelled {
+  color: var(--color-sandalwood);
+  border-color: rgba(107, 68, 35, 0.4);
+  background-color: rgba(107, 68, 35, 0.06);
+}

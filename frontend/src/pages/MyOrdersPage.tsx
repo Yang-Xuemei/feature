@@ -22,64 +22,93 @@ export default function MyOrdersPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20 text-gray-500">
-        加载中…
+      <div className="flex items-center justify-center py-20 guo-loading">
+        請 稍 候 …
       </div>
     );
   }
 
   return (
     <div>
-      <h2 className="text-lg font-bold text-gray-900 mb-4">我的订单</h2>
+      <div className="mb-6 text-center">
+        <h2 className="text-2xl guo-title" style={{ letterSpacing: '0.3em' }}>
+          我 · 之 · 訂 · 單
+        </h2>
+        <div className="guo-pattern-divider my-3">❖ ❖ ❖</div>
+      </div>
 
       {orders.length === 0 ? (
-        <div className="bg-white rounded-lg border p-12 text-center text-gray-500 text-sm">
-          还没有订单记录，快去今日订餐下单吧
+        <div className="guo-card p-12 text-center" style={{
+          color: 'var(--color-sandalwood)',
+          letterSpacing: '0.15em',
+          borderRadius: 2,
+        }}>
+          尚 · 無 · 記 · 錄 · 請 · 前 · 往 · 「今 · 日 · 訂 · 餐」下 · 單
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {orders.map((o) => (
-            <div key={o.id} className="bg-white rounded-lg border p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-gray-900">
+            <div key={o.id} className="guo-card p-4 relative" style={{ borderRadius: 2 }}>
+              {/* 订单头 */}
+              <div className="flex items-center justify-between mb-3 pb-3" style={{
+                borderBottom: '1px dashed rgba(107, 68, 35, 0.3)',
+              }}>
+                <div className="flex items-center gap-3">
+                  <span className="guo-title" style={{ letterSpacing: '0.1em' }}>
                     {o.order_date}
                   </span>
                   <StatusBadge status={o.status} />
                 </div>
-                <span className="text-sm text-gray-500">
+                <span className="text-xs" style={{
+                  color: 'var(--color-sandalwood)',
+                  letterSpacing: '0.1em',
+                }}>
                   #{o.id.slice(0, 8)}
                 </span>
               </div>
 
-              <div className="space-y-1.5">
+              {/* 菜品明细 */}
+              <div className="space-y-1.5 mb-3">
                 {(o.order_items ?? []).map((it) => (
                   <div
                     key={it.id}
                     className="flex justify-between text-sm"
+                    style={{ letterSpacing: '0.05em' }}
                   >
-                    <span className="text-gray-700">
+                    <span style={{ color: 'var(--color-ink)' }}>
                       {it.dish_name_snapshot}{' '}
-                      <span className="text-gray-400">×{it.quantity}</span>
+                      <span style={{ color: 'var(--color-sandalwood)' }}>×{it.quantity}</span>
                     </span>
-                    <span className="text-gray-600">
+                    <span className="guo-price">
                       ¥{(it.dish_price_snapshot * it.quantity).toFixed(2)}
                     </span>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-3 pt-3 border-t flex items-center justify-between">
-                <span className="text-xs text-gray-500">
+              {/* 底部合计 */}
+              <div className="flex items-center justify-between pt-3" style={{
+                borderTop: '1px solid var(--color-sandalwood)',
+              }}>
+                <span className="text-xs" style={{
+                  color: 'var(--color-sandalwood)',
+                  letterSpacing: '0.08em',
+                }}>
                   {new Date(o.created_at).toLocaleString('zh-CN')}
                 </span>
-                <span className="text-orange-600 font-semibold">
-                  合计 ¥{o.total.toFixed(2)}
+                <span className="guo-price text-lg">
+                  合計 ¥{o.total.toFixed(2)}
                 </span>
               </div>
+
               {o.note && (
-                <div className="mt-2 text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded">
-                  备注：{o.note}
+                <div className="mt-3 text-xs px-3 py-2" style={{
+                  color: 'var(--color-ink-light)',
+                  backgroundColor: 'rgba(196, 154, 108, 0.1)',
+                  border: '1px dashed rgba(107, 68, 35, 0.3)',
+                  letterSpacing: '0.05em',
+                }}>
+                  <span style={{ color: 'var(--color-golden-dark)' }}>◈</span> 備註：{o.note}
                 </div>
               )}
             </div>

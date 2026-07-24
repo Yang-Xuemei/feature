@@ -94,15 +94,16 @@ export interface DailySummaryRow {
 }
 
 export const STATUS_LABEL: Record<OrderStatus, string> = {
-  submitted: '已提交',
-  confirmed: '已确认',
-  completed: '已完成',
-  cancelled: '已取消',
+  submitted: '已 · 呈',
+  confirmed: '已 · 准',
+  completed: '已 · 毕',
+  cancelled: '已 · 撤',
 };
 
+// 国风配色下的状态标签样式
 export const STATUS_COLOR: Record<OrderStatus, string> = {
-  submitted: 'bg-blue-100 text-blue-700 border-blue-200',
-  confirmed: 'bg-orange-100 text-orange-700 border-orange-200',
-  completed: 'bg-green-100 text-green-700 border-green-200',
-  cancelled: 'bg-gray-100 text-gray-500 border-gray-200',
+  submitted: 'guo-status-submitted',
+  confirmed: 'guo-status-confirmed',
+  completed: 'guo-status-completed',
+  cancelled: 'guo-status-cancelled',
 };

@@ -12,6 +12,12 @@ function todayStr() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
+function categoryChar(c: string | undefined) {
+  if (c === '飲品') return '飲';
+  if (c === '套餐') return '膳';
+  return '肴';
+}
+
 export default function MenuPublishPage() {
   const [date, setDate] = useState(todayStr());
   const [dishes, setDishes] = useState<Dish[]>([]);
@@ -87,85 +93,111 @@ export default function MenuPublishPage() {
     }
   };
 
-  const enabledDishes = dishes;
-  const filteredDishes = enabledDishes.filter((d) => {
+  const filteredDishes = dishes.filter((d) => {
     if (filter === 'all') return true;
     return d.category === filter;
   });
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
-        <h2 className="text-lg font-bold text-gray-900">每日菜单发布</h2>
+      {/* 标题 */}
+      <div className="mb-6 text-center">
+        <h2 className="text-2xl guo-title" style={{ letterSpacing: '0.3em' }}>
+          每 · 日 · 菜 · 單
+        </h2>
+        <div className="guo-pattern-divider my-3">❖ ❖ ❖</div>
+        <p className="text-xs" style={{
+          color: 'var(--color-sandalwood)',
+          letterSpacing: '0.15em',
+        }}>
+          擇 · 菜 · 成 · 單 · 以 · 告 · 來 · 客
+        </p>
+      </div>
+
+      {/* 日期选择 */}
+      <div className="flex items-center justify-end mb-4">
+        <label className="text-sm mr-2" style={{
+          color: 'var(--color-ink-light)',
+          letterSpacing: '0.1em',
+        }}>
+          日期
+        </label>
         <input
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="px-3 py-1.5 border rounded-lg text-sm"
+          className="guo-input px-3 py-1.5 text-sm"
         />
       </div>
 
       {error && (
-        <div className="mb-4 text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">
+        <div className="mb-4 guo-error px-4 py-3 text-sm" style={{ letterSpacing: '0.05em' }}>
           {error}
         </div>
       )}
       {message && (
-        <div className="mb-4 text-sm text-green-700 bg-green-50 px-3 py-2 rounded-lg">
+        <div className="mb-4 guo-success px-4 py-3 text-sm" style={{ letterSpacing: '0.05em' }}>
           {message}
         </div>
       )}
 
       {loading ? (
-        <div className="flex items-center justify-center py-20 text-gray-500">
-          加载中…
+        <div className="flex items-center justify-center py-20 guo-loading">
+          請 稍 候 …
         </div>
       ) : (
         <>
-          <div className="bg-white rounded-lg border p-3 mb-4 flex items-center justify-between flex-wrap gap-2">
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-gray-600">
-                已选{' '}
-                <span className="font-semibold text-orange-600">
-                  {selected.size}
-                </span>{' '}
-                道菜品
+          {/* 已选信息栏 */}
+          <div className="guo-card p-3 mb-4 flex items-center justify-between flex-wrap gap-2" style={{ borderRadius: 2 }}>
+            <div className="flex items-center gap-3 text-sm">
+              <span style={{ color: 'var(--color-ink-light)', letterSpacing: '0.1em' }}>
+                已選 <span className="guo-price text-base">{selected.size}</span> 道菜品
               </span>
               {published && (
-                <span className="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded">
-                  已发布
+                <span className="guo-tag" style={{
+                  color: 'var(--color-celadon-dark)',
+                  borderColor: 'var(--color-celadon-dark)',
+                  letterSpacing: '0.15em',
+                }}>
+                  已 · 發 · 布
                 </span>
               )}
             </div>
             <button
               onClick={handlePublish}
               disabled={saving || selected.size === 0}
-              className="px-4 py-1.5 bg-orange-500 text-white rounded-lg text-sm hover:bg-orange-600 disabled:opacity-50"
+              className="guo-btn-primary px-4 py-1.5 text-sm"
+              style={{ letterSpacing: '0.15em' }}
             >
-              {saving
-                ? '发布中…'
-                : published
-                ? '更新菜单'
-                : '发布菜单'}
+              {saving ? '發 · 布 · 中 …' : published ? '更 · 新 · 菜 · 單' : '發 · 布 · 菜 · 單'}
             </button>
           </div>
 
+          {/* 分类筛选 */}
           <div className="flex gap-2 mb-3 overflow-x-auto">
-            {['all', '套餐', '单品', '饮品'].map((f) => (
+            {[
+              { key: 'all', label: '全 · 部' },
+              { key: '套餐', label: '套 · 餐' },
+              { key: '单品', label: '單 · 品' },
+              { key: '饮品', label: '飲 · 品' },
+            ].map((f) => (
               <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className={`px-3 py-1 text-sm rounded-full whitespace-nowrap ${
-                  filter === f
-                    ? 'bg-gray-900 text-white'
-                    : 'bg-white border text-gray-600'
-                }`}
+                key={f.key}
+                onClick={() => setFilter(f.key)}
+                className="px-3 py-1 text-sm whitespace-nowrap transition-all"
+                style={{
+                  letterSpacing: '0.1em',
+                  border: filter === f.key ? '1px solid var(--color-vermilion)' : '1px solid var(--color-sandalwood)',
+                  backgroundColor: filter === f.key ? 'var(--color-vermilion)' : 'rgba(245, 239, 230, 0.6)',
+                  color: filter === f.key ? 'var(--color-paper)' : 'var(--color-ink-light)',
+                }}
               >
-                {f === 'all' ? '全部' : f}
+                {f.label}
               </button>
             ))}
           </div>
 
+          {/* 菜品列表 */}
           <div className="space-y-2">
             {filteredDishes.map((d) => {
               const isSel = selected.has(d.id);
@@ -174,50 +206,86 @@ export default function MenuPublishPage() {
                 <div
                   key={d.id}
                   onClick={() => toggle(d.id)}
-                  className={`bg-white rounded-lg border p-3 flex items-center gap-3 cursor-pointer transition-colors ${
-                    isSel
-                      ? 'border-orange-400 bg-orange-50/30'
-                      : 'hover:bg-gray-50'
+                  className={`guo-card p-3 flex items-center gap-3 cursor-pointer transition-all ${
+                    isSel ? '' : ''
                   }`}
+                  style={{
+                    borderRadius: 2,
+                    borderColor: isSel ? 'var(--color-vermilion)' : undefined,
+                    backgroundColor: isSel ? 'rgba(139, 38, 53, 0.05)' : undefined,
+                    boxShadow: isSel ? 'inset 0 0 0 1px rgba(139, 38, 53, 0.3), 0 2px 6px rgba(44, 36, 22, 0.12)' : undefined,
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isSel) {
+                      e.currentTarget.style.backgroundColor = 'rgba(196, 154, 108, 0.08)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isSel) {
+                      e.currentTarget.style.backgroundColor = '';
+                    }
+                  }}
                 >
+                  {/* 选择框 */}
                   <div
-                    className={`w-5 h-5 rounded border flex items-center justify-center shrink-0 ${
-                      isSel
-                        ? 'bg-orange-500 border-orange-500 text-white'
-                        : 'border-gray-300'
-                    }`}
+                    className="w-5 h-5 flex items-center justify-center shrink-0 transition-colors"
+                    style={{
+                      border: `1px solid ${isSel ? 'var(--color-vermilion)' : 'var(--color-sandalwood)'}`,
+                      backgroundColor: isSel ? 'var(--color-vermilion)' : 'transparent',
+                      color: isSel ? 'var(--color-paper)' : 'transparent',
+                    }}
                   >
                     {isSel && '✓'}
                   </div>
+
+                  {/* 菜品图片/占位 */}
                   {d.image_url ? (
-                    <img
-                      src={d.image_url}
-                      alt={d.name}
-                      className="w-10 h-10 rounded object-cover shrink-0 bg-gray-100"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                      }}
-                    />
+                    <div className="guo-image-frame shrink-0 overflow-hidden" style={{ width: 44, height: 44 }}>
+                      <img
+                        src={d.image_url}
+                        alt={d.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                        }}
+                      />
+                    </div>
                   ) : (
-                    <div className="w-10 h-10 rounded bg-gradient-to-br from-orange-100 to-red-100 flex items-center justify-center text-lg shrink-0">
-                      {d.category === '饮品' ? '🥤' : d.category === '套餐' ? '🍱' : '🍽️'}
+                    <div
+                      className="guo-seal shrink-0"
+                      style={{
+                        width: 44,
+                        height: 44,
+                        fontSize: '1.25rem',
+                        borderRadius: 2,
+                        transform: 'none',
+                      }}
+                    >
+                      {categoryChar(d.category)}
                     </div>
                   )}
+
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-gray-900">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-medium guo-title" style={{ letterSpacing: '0.1em' }}>
                         {d.name}
                       </span>
-                      <span className="text-xs px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded">
+                      <span className="guo-tag" style={{
+                        color: 'var(--color-sandalwood)',
+                        borderColor: 'rgba(107, 68, 35, 0.4)',
+                      }}>
                         {d.category}
                       </span>
                       {existingItem && (
-                        <span className="text-xs text-gray-400">
-                          (当前 ¥{existingItem.price_snapshot.toFixed(2)})
+                        <span className="text-xs" style={{
+                          color: 'var(--color-sandalwood)',
+                          letterSpacing: '0.05em',
+                        }}>
+                          (當前 ¥{existingItem.price_snapshot.toFixed(2)})
                         </span>
                       )}
                     </div>
-                    <div className="text-sm text-orange-600 mt-0.5">
+                    <div className="guo-price text-sm mt-1" style={{ letterSpacing: '0.05em' }}>
                       ¥{d.price.toFixed(2)} / {d.unit}
                     </div>
                   </div>
@@ -227,8 +295,12 @@ export default function MenuPublishPage() {
           </div>
 
           {filteredDishes.length === 0 && (
-            <div className="bg-white rounded-lg border p-12 text-center text-gray-500 text-sm">
-              暂无启用中的菜品，请先在"菜品库"中添加
+            <div className="guo-card p-12 text-center" style={{
+              color: 'var(--color-sandalwood)',
+              letterSpacing: '0.15em',
+              borderRadius: 2,
+            }}>
+              暫無啟用中的菜品 · 請先在「菜品庫」中添加
             </div>
           )}
         </>

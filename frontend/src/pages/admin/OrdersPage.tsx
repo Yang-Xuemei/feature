@@ -85,67 +85,64 @@ export default function OrdersPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-gray-900">
-          订单管理
-          {!loading && orders.length > 0 && (
-            <span className="ml-2 text-sm font-normal text-gray-500">
-              ({orders.length} 条)
-            </span>
-          )}
+      {/* 标题 */}
+      <div className="mb-6 text-center">
+        <h2 className="text-2xl guo-title" style={{ letterSpacing: '0.3em' }}>
+          訂 · 單 · 管 · 理
         </h2>
-        <div className="relative" ref={exportRef}>
-          <button
-            onClick={() => setShowExportMenu((v) => !v)}
-            className="px-3 py-1.5 bg-white border text-gray-700 rounded-lg text-sm hover:bg-gray-50 flex items-center gap-1"
-          >
-            导出 ▼
-          </button>
-          {showExportMenu && (
-            <div className="absolute right-0 mt-1 w-36 bg-white border rounded-lg shadow-lg z-10 overflow-hidden">
-              <button
-                onClick={handleExportCsv}
-                className="w-full px-3 py-2 text-sm text-left text-gray-700 hover:bg-gray-50"
-              >
-                导出 CSV 表格
-              </button>
-              <button
-                onClick={handleExportPdf}
-                className="w-full px-3 py-2 text-sm text-left text-gray-700 hover:bg-gray-50 border-t"
-              >
-                导出 PDF 表格
-              </button>
-            </div>
-          )}
-        </div>
+        <div className="guo-pattern-divider my-3">❖ ❖ ❖</div>
+        {!loading && orders.length > 0 && (
+          <p className="text-xs" style={{
+            color: 'var(--color-sandalwood)',
+            letterSpacing: '0.15em',
+          }}>
+            共計 {orders.length} 筆 · 記 · 錄
+          </p>
+        )}
       </div>
 
-      <div className="bg-white rounded-lg border p-3 mb-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+      {/* 筛选区 */}
+      <div className="guo-card p-4 mb-4 grid grid-cols-1 sm:grid-cols-3 gap-3" style={{ borderRadius: 2 }}>
         <div>
-          <label className="block text-xs text-gray-600 mb-1">日期</label>
+          <label className="block text-xs mb-1" style={{
+            color: 'var(--color-ink-light)',
+            letterSpacing: '0.1em',
+          }}>
+            日期
+          </label>
           <input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="w-full px-2 py-1.5 border rounded text-sm"
+            className="guo-input w-full px-2 py-1.5 text-sm"
           />
         </div>
         <div>
-          <label className="block text-xs text-gray-600 mb-1">部门</label>
+          <label className="block text-xs mb-1" style={{
+            color: 'var(--color-ink-light)',
+            letterSpacing: '0.1em',
+          }}>
+            部 · 門
+          </label>
           <input
             type="text"
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
             placeholder="如：技术部"
-            className="w-full px-2 py-1.5 border rounded text-sm"
+            className="guo-input w-full px-2 py-1.5 text-sm"
           />
         </div>
         <div>
-          <label className="block text-xs text-gray-600 mb-1">状态</label>
+          <label className="block text-xs mb-1" style={{
+            color: 'var(--color-ink-light)',
+            letterSpacing: '0.1em',
+          }}>
+            狀 · 態
+          </label>
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="w-full px-2 py-1.5 border rounded text-sm"
+            className="guo-input w-full px-2 py-1.5 text-sm"
           >
             <option value="">全部</option>
             <option value="submitted">已提交</option>
@@ -154,92 +151,179 @@ export default function OrdersPage() {
             <option value="cancelled">已取消</option>
           </select>
         </div>
-        <div className="sm:col-span-3 flex justify-end gap-2">
+        <div className="sm:col-span-3 flex justify-end gap-2" style={{
+          borderTop: '1px dashed rgba(107, 68, 35, 0.3)',
+          paddingTop: '0.75rem',
+        }}>
           <button
             onClick={() => {
               setDate('');
               setDepartment('');
               setStatus('');
             }}
-            className="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900"
+            className="guo-btn-ghost px-3 py-1.5 text-sm"
+            style={{ letterSpacing: '0.1em' }}
           >
-            重置
+            重 · 置
           </button>
           <button
             onClick={load}
-            className="px-3 py-1.5 bg-orange-500 text-white rounded-lg text-sm"
+            className="guo-btn-primary px-3 py-1.5 text-sm"
+            style={{ letterSpacing: '0.1em' }}
           >
-            查询
+            查 · 詢
           </button>
         </div>
       </div>
 
+      {/* 导出按钮 */}
+      <div className="flex justify-end mb-3 relative" ref={exportRef}>
+        <button
+          onClick={() => setShowExportMenu((v) => !v)}
+          className="guo-btn-secondary px-3 py-1.5 text-sm"
+          style={{ letterSpacing: '0.1em' }}
+        >
+          導 · 出 ▼
+        </button>
+        {showExportMenu && (
+          <div className="absolute right-0 mt-1 w-40 z-10 overflow-hidden" style={{
+            backgroundColor: 'var(--color-paper)',
+            border: '1px solid var(--color-sandalwood)',
+            boxShadow: '0 4px 12px rgba(44, 36, 22, 0.15)',
+          }}>
+            <button
+              onClick={handleExportCsv}
+              className="w-full px-3 py-2 text-sm text-left transition-colors"
+              style={{
+                color: 'var(--color-ink)',
+                letterSpacing: '0.1em',
+                borderBottom: '1px dashed rgba(107, 68, 35, 0.3)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(196, 154, 108, 0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
+            >
+              導 · 出 CSV 表格
+            </button>
+            <button
+              onClick={handleExportPdf}
+              className="w-full px-3 py-2 text-sm text-left transition-colors"
+              style={{
+                color: 'var(--color-ink)',
+                letterSpacing: '0.1em',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(196, 154, 108, 0.15)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
+            >
+              導 · 出 PDF 表格
+            </button>
+          </div>
+        )}
+      </div>
+
       {loading ? (
-        <div className="flex items-center justify-center py-20 text-gray-500">
-          加载中…
+        <div className="flex items-center justify-center py-20 guo-loading">
+          請 稍 候 …
         </div>
       ) : orders.length === 0 ? (
-        <div className="bg-white rounded-lg border p-12 text-center text-gray-500 text-sm">
-          暂无订单
+        <div className="guo-card p-12 text-center" style={{
+          color: 'var(--color-sandalwood)',
+          letterSpacing: '0.15em',
+          borderRadius: 2,
+        }}>
+          暫 · 無 · 訂 · 單
         </div>
       ) : (
-        <div className="bg-white rounded-lg border overflow-hidden">
+        <div className="guo-card overflow-hidden" style={{ borderRadius: 2 }}>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 text-gray-600">
+              <thead className="guo-table-head">
                 <tr>
-                  <th className="text-left px-3 py-2 font-medium">日期</th>
-                  <th className="text-left px-3 py-2 font-medium">用户</th>
-                  <th className="text-left px-3 py-2 font-medium hidden sm:table-cell">
-                    部门
+                  <th className="text-left px-3 py-2.5 font-semibold" style={{ letterSpacing: '0.1em' }}>日期</th>
+                  <th className="text-left px-3 py-2.5 font-semibold" style={{ letterSpacing: '0.1em' }}>用戶</th>
+                  <th className="text-left px-3 py-2.5 font-semibold hidden sm:table-cell" style={{ letterSpacing: '0.1em' }}>
+                    部 · 門
                   </th>
-                  <th className="text-left px-3 py-2 font-medium">状态</th>
-                  <th className="text-right px-3 py-2 font-medium">金额</th>
-                  <th className="text-right px-3 py-2 font-medium">操作</th>
+                  <th className="text-left px-3 py-2.5 font-semibold" style={{ letterSpacing: '0.1em' }}>狀 · 態</th>
+                  <th className="text-right px-3 py-2.5 font-semibold" style={{ letterSpacing: '0.1em' }}>金 · 額</th>
+                  <th className="text-right px-3 py-2.5 font-semibold" style={{ letterSpacing: '0.1em' }}>操 · 作</th>
                 </tr>
               </thead>
-              <tbody className="divide-y">
+              <tbody>
                 {orders.map((o) => (
-                  <tr key={o.id} className="hover:bg-gray-50">
-                    <td className="px-3 py-2 whitespace-nowrap">{o.order_date}</td>
-                    <td className="px-3 py-2">
-                      <div className="font-medium text-gray-900">
+                  <tr key={o.id} className="guo-table-row">
+                    <td className="px-3 py-2.5 whitespace-nowrap" style={{ letterSpacing: '0.05em' }}>
+                      {o.order_date}
+                    </td>
+                    <td className="px-3 py-2.5">
+                      <div className="guo-title" style={{ letterSpacing: '0.1em' }}>
                         {o.user_profiles?.username}
                       </div>
-                      <div className="text-xs text-gray-500 sm:hidden">
+                      <div className="text-xs sm:hidden" style={{ color: 'var(--color-sandalwood)' }}>
                         {o.user_profiles?.department}
                       </div>
                     </td>
-                    <td className="px-3 py-2 text-gray-600 hidden sm:table-cell">
+                    <td className="px-3 py-2.5 hidden sm:table-cell" style={{
+                      color: 'var(--color-ink-light)',
+                      letterSpacing: '0.05em',
+                    }}>
                       {o.user_profiles?.department}
                     </td>
-                    <td className="px-3 py-2">
+                    <td className="px-3 py-2.5">
                       <StatusBadge status={o.status} />
                     </td>
-                    <td className="px-3 py-2 text-right font-medium text-orange-600">
+                    <td className="px-3 py-2.5 text-right guo-price">
                       ¥{o.total.toFixed(2)}
                     </td>
-                    <td className="px-3 py-2 text-right">
+                    <td className="px-3 py-2.5 text-right whitespace-nowrap">
                       <button
                         onClick={() => setSelectedOrder(o)}
-                        className="text-xs text-blue-600 hover:underline mr-2"
+                        className="text-xs mr-2 guo-link"
+                        style={{ letterSpacing: '0.1em' }}
                       >
-                        详情
+                        詳 · 情
                       </button>
                       {o.status === 'submitted' && (
                         <button
                           onClick={() => handleStatusChange(o, 'confirmed')}
-                          className="text-xs text-green-600 hover:underline mr-2"
+                          className="text-xs mr-2"
+                          style={{
+                            color: 'var(--color-celadon-dark)',
+                            letterSpacing: '0.1em',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.textDecoration = 'underline';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.textDecoration = 'none';
+                          }}
                         >
-                          确认
+                          確 · 認
                         </button>
                       )}
                       {o.status === 'confirmed' && (
                         <button
                           onClick={() => handleStatusChange(o, 'completed')}
-                          className="text-xs text-green-600 hover:underline mr-2"
+                          className="text-xs mr-2"
+                          style={{
+                            color: 'var(--color-celadon-dark)',
+                            letterSpacing: '0.1em',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.textDecoration = 'underline';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.textDecoration = 'none';
+                          }}
                         >
-                          完成
+                          完 · 成
                         </button>
                       )}
                       {o.status !== 'cancelled' && o.status !== 'completed' && (
@@ -249,9 +333,19 @@ export default function OrdersPage() {
                               handleStatusChange(o, 'cancelled');
                             }
                           }}
-                          className="text-xs text-red-600 hover:underline"
+                          className="text-xs"
+                          style={{
+                            color: 'var(--color-vermilion)',
+                            letterSpacing: '0.1em',
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.textDecoration = 'underline';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.textDecoration = 'none';
+                          }}
                         >
-                          取消
+                          取 · 消
                         </button>
                       )}
                     </td>
@@ -263,88 +357,99 @@ export default function OrdersPage() {
         </div>
       )}
 
+      {/* 订单详情模态框 */}
       <Modal
         open={!!selectedOrder}
         onClose={() => setSelectedOrder(null)}
-        title="订单详情"
+        title="訂 · 單 · 詳 · 情"
       >
         {selectedOrder && (
           <div className="space-y-3 text-sm">
-            <div className="flex justify-between">
-              <span className="text-gray-500">订单号</span>
-              <span className="text-gray-900">
-                #{selectedOrder.id.slice(0, 8)}
-              </span>
+            <div className="flex justify-between py-1.5" style={{ borderBottom: '1px dashed rgba(107, 68, 35, 0.25)' }}>
+              <span style={{ color: 'var(--color-ink-light)', letterSpacing: '0.1em' }}>訂單號</span>
+              <span className="guo-title">#{selectedOrder.id.slice(0, 8)}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">日期</span>
-              <span className="text-gray-900">{selectedOrder.order_date}</span>
+            <div className="flex justify-between py-1.5" style={{ borderBottom: '1px dashed rgba(107, 68, 35, 0.25)' }}>
+              <span style={{ color: 'var(--color-ink-light)', letterSpacing: '0.1em' }}>日 · 期</span>
+              <span className="guo-title">{selectedOrder.order_date}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">用户</span>
-              <span className="text-gray-900">
-                {selectedOrder.user_profiles?.username}
-              </span>
+            <div className="flex justify-between py-1.5" style={{ borderBottom: '1px dashed rgba(107, 68, 35, 0.25)' }}>
+              <span style={{ color: 'var(--color-ink-light)', letterSpacing: '0.1em' }}>用 · 戶</span>
+              <span className="guo-title">{selectedOrder.user_profiles?.username}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">部门</span>
-              <span className="text-gray-900">
-                {selectedOrder.user_profiles?.department}
-              </span>
+            <div className="flex justify-between py-1.5" style={{ borderBottom: '1px dashed rgba(107, 68, 35, 0.25)' }}>
+              <span style={{ color: 'var(--color-ink-light)', letterSpacing: '0.1em' }}>部 · 門</span>
+              <span className="guo-title">{selectedOrder.user_profiles?.department}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">手机号</span>
-              <span className="text-gray-900">
-                {selectedOrder.user_profiles?.phone}
-              </span>
+            <div className="flex justify-between py-1.5" style={{ borderBottom: '1px dashed rgba(107, 68, 35, 0.25)' }}>
+              <span style={{ color: 'var(--color-ink-light)', letterSpacing: '0.1em' }}>手機號</span>
+              <span className="guo-title">{selectedOrder.user_profiles?.phone}</span>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-500">状态</span>
+            <div className="flex justify-between items-center py-1.5" style={{ borderBottom: '1px solid var(--color-sandalwood)' }}>
+              <span style={{ color: 'var(--color-ink-light)', letterSpacing: '0.1em' }}>狀 · 態</span>
               <StatusBadge status={selectedOrder.status} />
             </div>
 
-            <div className="pt-3 border-t">
-              <div className="text-gray-500 mb-2">菜品明细</div>
+            {/* 菜品明细 */}
+            <div className="pt-3">
+              <div className="mb-2 guo-title" style={{ letterSpacing: '0.15em', fontSize: '0.9rem' }}>
+                菜 · 品 · 明 · 細
+              </div>
               {(selectedOrder.order_items ?? []).map((it) => (
                 <div
                   key={it.id}
-                  className="flex justify-between py-1 border-b last:border-0"
+                  className="flex justify-between py-1.5"
+                  style={{
+                    borderBottom: '1px dashed rgba(107, 68, 35, 0.2)',
+                    letterSpacing: '0.05em',
+                  }}
                 >
                   <span>
-                    {it.dish_name_snapshot} ×{it.quantity}
+                    {it.dish_name_snapshot} <span style={{ color: 'var(--color-sandalwood)' }}>×{it.quantity}</span>
                   </span>
-                  <span className="text-gray-600">
+                  <span className="guo-price">
                     ¥{(it.dish_price_snapshot * it.quantity).toFixed(2)}
                   </span>
                 </div>
               ))}
             </div>
 
-            <div className="pt-3 border-t flex justify-between items-center">
-              <span className="text-gray-500">合计</span>
-              <span className="text-lg font-bold text-orange-600">
+            {/* 合计 */}
+            <div className="pt-3 flex justify-between items-center" style={{ borderTop: '1px solid var(--color-sandalwood)' }}>
+              <span style={{ color: 'var(--color-ink-light)', letterSpacing: '0.15em' }}>合 · 計</span>
+              <span className="guo-price text-xl">
                 ¥{selectedOrder.total.toFixed(2)}
               </span>
             </div>
 
             {selectedOrder.note && (
-              <div className="text-gray-500">
-                <div className="mb-1">备注</div>
-                <div className="text-gray-900 bg-gray-50 px-2 py-1 rounded">
-                  {selectedOrder.note}
-                </div>
+              <div className="text-xs" style={{
+                backgroundColor: 'rgba(196, 154, 108, 0.1)',
+                border: '1px dashed rgba(107, 68, 35, 0.3)',
+                padding: '0.5rem 0.75rem',
+                color: 'var(--color-ink-light)',
+                letterSpacing: '0.05em',
+              }}>
+                <span style={{ color: 'var(--color-golden-dark)' }}>◈</span> 備註：{selectedOrder.note}
               </div>
             )}
 
-            <div className="pt-3 border-t flex flex-wrap gap-2">
+            {/* 操作按钮 */}
+            <div className="pt-3 flex flex-wrap gap-2" style={{ borderTop: '1px dashed rgba(107, 68, 35, 0.3)' }}>
               {selectedOrder.status === 'submitted' && (
                 <button
                   onClick={() => {
                     handleStatusChange(selectedOrder, 'confirmed');
                   }}
-                  className="px-3 py-1.5 bg-green-500 text-white rounded text-sm"
+                  className="px-4 py-1.5 text-sm"
+                  style={{
+                    backgroundColor: 'var(--color-celadon)',
+                    color: 'var(--color-paper)',
+                    border: '1px solid var(--color-celadon-dark)',
+                    letterSpacing: '0.1em',
+                  }}
                 >
-                  确认订单
+                  確 · 認 · 訂 · 單
                 </button>
               )}
               {selectedOrder.status === 'confirmed' && (
@@ -352,9 +457,15 @@ export default function OrdersPage() {
                   onClick={() => {
                     handleStatusChange(selectedOrder, 'completed');
                   }}
-                  className="px-3 py-1.5 bg-green-500 text-white rounded text-sm"
+                  className="px-4 py-1.5 text-sm"
+                  style={{
+                    backgroundColor: 'var(--color-celadon)',
+                    color: 'var(--color-paper)',
+                    border: '1px solid var(--color-celadon-dark)',
+                    letterSpacing: '0.1em',
+                  }}
                 >
-                  标记完成
+                  標 · 記 · 完 · 成
                 </button>
               )}
               {selectedOrder.status !== 'cancelled' &&
@@ -365,9 +476,15 @@ export default function OrdersPage() {
                         handleStatusChange(selectedOrder, 'cancelled');
                       }
                     }}
-                    className="px-3 py-1.5 bg-red-500 text-white rounded text-sm"
+                    className="px-4 py-1.5 text-sm"
+                    style={{
+                      backgroundColor: 'var(--color-vermilion)',
+                      color: 'var(--color-paper)',
+                      border: '1px solid var(--color-vermilion-dark)',
+                      letterSpacing: '0.1em',
+                    }}
                   >
-                    取消订单
+                    取 · 消 · 訂 · 單
                   </button>
                 )}
             </div>

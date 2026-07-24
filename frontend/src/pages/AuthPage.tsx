@@ -46,7 +46,6 @@ export default function AuthPage() {
         }
         await signUp(username.trim(), phone, department.trim(), password);
         setHint('注册成功！首位注册用户将自动成为管理员。正在登录…');
-        // 自动登录
         await signIn(phone, password);
         await refresh();
         navigate('/');
@@ -72,33 +71,64 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-red-50 px-4 py-8">
-      <div className="w-full max-w-md">
+    <div
+      className="min-h-screen w-full flex items-center justify-center px-4 py-8 relative"
+      style={{ backgroundColor: 'var(--color-paper)' }}
+    >
+      {/* 装饰：四角纹饰 */}
+      <div className="absolute top-6 left-6 text-2xl" style={{ color: 'rgba(196, 154, 108, 0.4)' }}>❋</div>
+      <div className="absolute top-6 right-6 text-2xl" style={{ color: 'rgba(196, 154, 108, 0.4)' }}>❋</div>
+      <div className="absolute bottom-6 left-6 text-2xl" style={{ color: 'rgba(196, 154, 108, 0.4)' }}>❋</div>
+      <div className="absolute bottom-6 right-6 text-2xl" style={{ color: 'rgba(196, 154, 108, 0.4)' }}>❋</div>
+
+      <div className="w-full max-w-md relative">
+        {/* 顶部印章标题 */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white text-3xl font-bold shadow-lg mb-4">
-            餐
+          <div className="inline-block mb-4 relative">
+            <div
+              className="guo-seal w-20 h-20 text-4xl"
+              style={{ fontSize: '2.5rem', borderRadius: 4 }}
+            >
+              膳
+            </div>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">企业订餐系统</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            手机号登录 · 方便快捷
+          <h1 className="text-3xl guo-title mb-2" style={{ letterSpacing: '0.3em' }}>
+            企業訂餐
+          </h1>
+          <div className="guo-pattern-divider mb-2">❖ ❖ ❖</div>
+          <p className="text-xs" style={{
+            color: 'var(--color-sandalwood)',
+            letterSpacing: '0.25em',
+          }}>
+            壹日壹膳 · 以食為天
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 border">
-          <div className="flex bg-gray-100 rounded-lg p-1 mb-6">
+        {/* 主卡片 */}
+        <div className="guo-card p-6 sm:p-8" style={{ borderRadius: 2 }}>
+          {/* 登录/注册切换 */}
+          <div
+            className="flex mb-6 relative"
+            style={{
+              border: '1px solid var(--color-sandalwood)',
+              backgroundColor: 'rgba(232, 220, 196, 0.3)',
+            }}
+          >
             <button
               onClick={() => {
                 setMode('login');
                 setError('');
                 setHint('');
               }}
-              className={`flex-1 py-2 text-sm rounded-md transition-colors ${
-                mode === 'login'
-                  ? 'bg-white text-gray-900 shadow-sm font-medium'
-                  : 'text-gray-600'
-              }`}
+              className="flex-1 py-2.5 text-sm transition-colors relative"
+              style={{
+                letterSpacing: '0.2em',
+                color: mode === 'login' ? 'var(--color-paper)' : 'var(--color-ink-light)',
+                backgroundColor: mode === 'login' ? 'var(--color-vermilion)' : 'transparent',
+                fontWeight: mode === 'login' ? 600 : 400,
+              }}
             >
-              登录
+              登 · 錄
             </button>
             <button
               onClick={() => {
@@ -106,13 +136,15 @@ export default function AuthPage() {
                 setError('');
                 setHint('');
               }}
-              className={`flex-1 py-2 text-sm rounded-md transition-colors ${
-                mode === 'register'
-                  ? 'bg-white text-gray-900 shadow-sm font-medium'
-                  : 'text-gray-600'
-              }`}
+              className="flex-1 py-2.5 text-sm transition-colors relative"
+              style={{
+                letterSpacing: '0.2em',
+                color: mode === 'register' ? 'var(--color-paper)' : 'var(--color-ink-light)',
+                backgroundColor: mode === 'register' ? 'var(--color-vermilion)' : 'transparent',
+                fontWeight: mode === 'register' ? 600 : 400,
+              }}
             >
-              注册
+              注 · 冊
             </button>
           </div>
 
@@ -120,28 +152,34 @@ export default function AuthPage() {
             {mode === 'register' && (
               <>
                 <div>
-                  <label className="block text-sm text-gray-700 mb-1">
-                    用户名 <span className="text-red-500">*</span>
+                  <label className="block text-sm mb-2" style={{
+                    color: 'var(--color-ink-light)',
+                    letterSpacing: '0.1em',
+                  }}>
+                    姓 名 <span style={{ color: 'var(--color-vermilion)' }}>*</span>
                   </label>
                   <input
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    placeholder="请输入用户名"
-                    className="w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                    placeholder="请输入姓名"
+                    className="guo-input w-full px-3 py-2.5"
                     maxLength={30}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-700 mb-1">
-                    所属部门 <span className="text-red-500">*</span>
+                  <label className="block text-sm mb-2" style={{
+                    color: 'var(--color-ink-light)',
+                    letterSpacing: '0.1em',
+                  }}>
+                    部 · 門 <span style={{ color: 'var(--color-vermilion)' }}>*</span>
                   </label>
                   <input
                     type="text"
                     value={department}
                     onChange={(e) => setDepartment(e.target.value)}
                     placeholder="如：技术部 / 市场部"
-                    className="w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                    className="guo-input w-full px-3 py-2.5"
                     maxLength={30}
                   />
                 </div>
@@ -149,41 +187,47 @@ export default function AuthPage() {
             )}
 
             <div>
-              <label className="block text-sm text-gray-700 mb-1">
-                手机号 <span className="text-red-500">*</span>
+              <label className="block text-sm mb-2" style={{
+                color: 'var(--color-ink-light)',
+                letterSpacing: '0.1em',
+              }}>
+                手機號 <span style={{ color: 'var(--color-vermilion)' }}>*</span>
               </label>
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                 placeholder="请输入手机号"
-                className="w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                className="guo-input w-full px-3 py-2.5"
                 maxLength={15}
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm text-gray-700 mb-1">
-                密码 <span className="text-red-500">*</span>
+              <label className="block text-sm mb-2" style={{
+                color: 'var(--color-ink-light)',
+                letterSpacing: '0.1em',
+              }}>
+                密 · 碼 <span style={{ color: 'var(--color-vermilion)' }}>*</span>
               </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder={mode === 'register' ? '至少 6 位' : '请输入密码'}
-                className="w-full px-3 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent"
+                className="guo-input w-full px-3 py-2.5"
                 required
               />
             </div>
 
             {error && (
-              <div className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">
+              <div className="guo-error px-3 py-2 text-sm" style={{ letterSpacing: '0.05em' }}>
                 {error}
               </div>
             )}
             {hint && (
-              <div className="text-sm text-green-700 bg-green-50 px-3 py-2 rounded-lg">
+              <div className="guo-success px-3 py-2 text-sm" style={{ letterSpacing: '0.05em' }}>
                 {hint}
               </div>
             )}
@@ -191,17 +235,26 @@ export default function AuthPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg font-medium hover:from-orange-600 hover:to-red-600 disabled:opacity-50 transition-all"
+              className="guo-btn-primary w-full py-2.5 mt-2"
+              style={{ letterSpacing: '0.3em' }}
             >
-              {loading ? '处理中…' : mode === 'login' ? '登录' : '注册'}
+              {loading ? '請 稍 候 …' : mode === 'login' ? '登 · 錄' : '註 · 冊'}
             </button>
           </form>
 
           {mode === 'register' && (
-            <p className="text-xs text-gray-500 mt-4 text-center">
-              首位注册的用户将自动成为管理员
+            <p className="text-xs mt-4 text-center" style={{
+              color: 'var(--color-sandalwood)',
+              letterSpacing: '0.15em',
+            }}>
+              首位註冊者將自動成為管理員
             </p>
           )}
+        </div>
+
+        {/* 底部装饰 */}
+        <div className="guo-pattern-divider mt-6" style={{ opacity: 0.6 }}>
+          — ❖ —
         </div>
       </div>
     </div>
