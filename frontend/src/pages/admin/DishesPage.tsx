@@ -148,6 +148,20 @@ export default function DishesPage() {
           {filtered.map((d) => (
             <div key={d.id} className="bg-white rounded-lg border p-3">
               <div className="flex items-start justify-between gap-2">
+                {d.image_url ? (
+                  <img
+                    src={d.image_url}
+                    alt={d.name}
+                    className="w-16 h-16 rounded-lg object-cover shrink-0 bg-gray-100"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-orange-100 to-red-100 flex items-center justify-center text-2xl shrink-0">
+                    {d.category === '饮品' ? '🥤' : d.category === '套餐' ? '🍱' : '🍽️'}
+                  </div>
+                )}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <h3 className="font-medium text-gray-900 truncate">

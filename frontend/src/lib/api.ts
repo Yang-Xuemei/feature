@@ -310,3 +310,202 @@ export function exportOrdersToCsv(orders: Order[]) {
   link.click();
   URL.revokeObjectURL(url);
 }
+
+// ============ PDF 导出 ============
+export function exportOrdersToPdf(orders: Order[], filterDate?: string) {
+  const statusMap: Record<string, string> = {
+    submitted: '已提交',
+    confirmed: '已确认',
+    completed: '已完成',
+    cancelled: '已取消',
+  };
+
+  const totalAmount = orders.reduce((s, o) => s + o.total, 0);
+  const totalOrders = orders.length;
+
+  const rowsHtml = orders
+    .map((o) => {
+      const items = (o.order_items ?? [])
+        .map((it: OrderItem) => `${it.dish_name_snapshot} ×${it.quantity}`)
+        .join('；');
+      return `
+        <tr>
+          <td>${o.order_date}</td>
+          <td>${o.user_profiles?.username ?? '-'}</td>
+          <td>${o.user_profiles?.department ?? '-'}</td>
+          <td>${o.user_profiles?.phone ?? '-'}</td>
+          <td><span class="status status-${o.status}">${statusMap[o.status] ?? o.status}</span></td>
+          <td class="items">${items || '-'}</td>
+          <td class="amount">¥${o.total.toFixed(2)}</td>
+          <td>${o.note || '-'}</td>
+        </tr>
+      `;
+    })
+    .join('');
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+      <meta charset="UTF-8">
+      <title>订单明细${filterDate ? ` · ${filterDate}` : ''}</title>
+      <style>
+        @page { size: A4; margin: 1.5cm; }
+        * { box-sizing: border-box; }
+        body {
+          font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+          color: #1f2937;
+          font-size: 11pt;
+          line-height: 1.5;
+          margin: 0;
+          padding: 0;
+        }
+        .header {
+          border-bottom: 2px solid #ea580c;
+          padding-bottom: 12px;
+          margin-bottom: 20px;
+        }
+        .header h1 {
+          margin: 0;
+          font-size: 20pt;
+          color: #ea580c;
+          font-weight: 700;
+        }
+        .header .meta {
+          color: #6b7280;
+          font-size: 10pt;
+          margin-top: 6px;
+        }
+        .summary {
+          display: flex;
+          gap: 20px;
+          margin-bottom: 20px;
+          padding: 12px 16px;
+          background: #fff7ed;
+          border-radius: 6px;
+        }
+        .summary .item {
+          flex: 1;
+        }
+        .summary .label {
+          font-size: 9pt;
+          color: #9a3412;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+        .summary .value {
+          font-size: 16pt;
+          font-weight: 700;
+          color: #c2410c;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 10pt;
+        }
+        th, td {
+          padding: 8px 6px;
+          text-align: left;
+          border-bottom: 1px solid #e5e7eb;
+          vertical-align: top;
+        }
+        th {
+          background: #f9fafb;
+          font-weight: 600;
+          color: #374151;
+          font-size: 9pt;
+          text-transform: uppercase;
+          letter-spacing: 0.3px;
+        }
+        tbody tr:nth-child(even) { background: #fafafa; }
+        .items {
+          color: #4b5563;
+          font-size: 9.5pt;
+          max-width: 260px;
+        }
+        .amount {
+          text-align: right;
+          font-weight: 600;
+          color: #ea580c;
+          white-space: nowrap;
+        }
+        .status {
+          display: inline-block;
+          padding: 2px 8px;
+          border-radius: 10px;
+          font-size: 9pt;
+          font-weight: 500;
+        }
+        .status-submitted { background: #dbeafe; color: #1d4ed8; }
+        .status-confirmed { background: #ffedd5; color: #c2410c; }
+        .status-completed { background: #dcfce7; color: #15803d; }
+        .status-cancelled { background: #f3f4f6; color: #6b7280; }
+        .footer {
+          margin-top: 24px;
+          padding-top: 12px;
+          border-top: 1px solid #e5e7eb;
+          font-size: 9pt;
+          color: #9ca3af;
+          text-align: center;
+        }
+        @media print {
+          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .no-print { display: none !important; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="no-print" style="padding: 12px; background: #fef3c7; text-align: center; font-size: 10pt;">
+        正在准备打印，请在弹出的对话框中选择"另存为 PDF"
+      </div>
+      <div class="header">
+        <h1>企业订餐 · 订单明细</h1>
+        <div class="meta">
+          ${filterDate ? `日期：${filterDate}` : '全部订单'} · 导出时间：${new Date().toLocaleString('zh-CN')}
+        </div>
+      </div>
+      <div class="summary">
+        <div class="item">
+          <div class="label">订单数</div>
+          <div class="value">${totalOrders}</div>
+        </div>
+        <div class="item">
+          <div class="label">总金额</div>
+          <div class="value">¥${totalAmount.toFixed(2)}</div>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>日期</th>
+            <th>用户</th>
+            <th>部门</th>
+            <th>手机号</th>
+            <th>状态</th>
+            <th>菜品明细</th>
+            <th style="text-align:right">金额</th>
+            <th>备注</th>
+          </tr>
+        </thead>
+        <tbody>${rowsHtml || '<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:32px">暂无订单数据</td></tr>'}</tbody>
+      </table>
+      <div class="footer">
+        企业订餐系统 · 内部核算使用 · 共 ${totalOrders} 条记录
+      </div>
+      <script>
+        window.onload = function() {
+          setTimeout(function() { window.print(); }, 300);
+        };
+      </script>
+    </body>
+    </html>
+  `;
+
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    alert('无法打开打印窗口，请检查浏览器是否允许弹出窗口');
+    return;
+  }
+  printWindow.document.write(html);
+  printWindow.document.close();
+}

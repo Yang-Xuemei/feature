@@ -189,6 +189,20 @@ export default function MenuPublishPage() {
                   >
                     {isSel && '✓'}
                   </div>
+                  {d.image_url ? (
+                    <img
+                      src={d.image_url}
+                      alt={d.name}
+                      className="w-10 h-10 rounded object-cover shrink-0 bg-gray-100"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded bg-gradient-to-br from-orange-100 to-red-100 flex items-center justify-center text-lg shrink-0">
+                      {d.category === '饮品' ? '🥤' : d.category === '套餐' ? '🍱' : '🍽️'}
+                    </div>
+                  )}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-gray-900">

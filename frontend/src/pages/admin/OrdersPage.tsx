@@ -1,9 +1,13 @@
-import { useEffect, useState } from 'react';
-import { listAllOrders, updateOrderStatus, exportOrdersToCsv } from '../../lib/api';
+import { useEffect, useRef, useState } from 'react';
+import {
+  listAllOrders,
+  updateOrderStatus,
+  exportOrdersToCsv,
+  exportOrdersToPdf,
+} from '../../lib/api';
 import type { Order, OrderStatus } from '../../types';
 import StatusBadge from '../../components/StatusBadge';
 import Modal from '../../components/Modal';
-import { STATUS_LABEL } from '../../types';
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -48,24 +52,72 @@ export default function OrdersPage() {
     }
   };
 
-  const handleExport = () => {
+  const [showExportMenu, setShowExportMenu] = useState(false);
+  const exportRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onClickOutside = (e: MouseEvent) => {
+      if (exportRef.current && !exportRef.current.contains(e.target as Node)) {
+        setShowExportMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', onClickOutside);
+    return () => document.removeEventListener('mousedown', onClickOutside);
+  }, []);
+
+  const handleExportCsv = () => {
     if (orders.length === 0) {
       alert('当前筛选条件下没有订单可导出');
       return;
     }
     exportOrdersToCsv(orders);
+    setShowExportMenu(false);
+  };
+
+  const handleExportPdf = () => {
+    if (orders.length === 0) {
+      alert('当前筛选条件下没有订单可导出');
+      return;
+    }
+    exportOrdersToPdf(orders, date || undefined);
+    setShowExportMenu(false);
   };
 
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-bold text-gray-900">订单管理</h2>
-        <button
-          onClick={handleExport}
-          className="px-3 py-1.5 bg-white border text-gray-700 rounded-lg text-sm hover:bg-gray-50"
-        >
-          导出 CSV
-        </button>
+        <h2 className="text-lg font-bold text-gray-900">
+          订单管理
+          {!loading && orders.length > 0 && (
+            <span className="ml-2 text-sm font-normal text-gray-500">
+              ({orders.length} 条)
+            </span>
+          )}
+        </h2>
+        <div className="relative" ref={exportRef}>
+          <button
+            onClick={() => setShowExportMenu((v) => !v)}
+            className="px-3 py-1.5 bg-white border text-gray-700 rounded-lg text-sm hover:bg-gray-50 flex items-center gap-1"
+          >
+            导出 ▼
+          </button>
+          {showExportMenu && (
+            <div className="absolute right-0 mt-1 w-36 bg-white border rounded-lg shadow-lg z-10 overflow-hidden">
+              <button
+                onClick={handleExportCsv}
+                className="w-full px-3 py-2 text-sm text-left text-gray-700 hover:bg-gray-50"
+              >
+                导出 CSV 表格
+              </button>
+              <button
+                onClick={handleExportPdf}
+                className="w-full px-3 py-2 text-sm text-left text-gray-700 hover:bg-gray-50 border-t"
+              >
+                导出 PDF 表格
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="bg-white rounded-lg border p-3 mb-4 grid grid-cols-1 sm:grid-cols-3 gap-3">

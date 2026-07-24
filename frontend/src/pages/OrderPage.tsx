@@ -181,6 +181,20 @@ export default function OrderPage() {
                   key={it.id}
                   className="bg-white rounded-lg border p-3 sm:p-4 flex items-center gap-3"
                 >
+                  {dish.image_url ? (
+                    <img
+                      src={dish.image_url}
+                      alt={dish.name}
+                      className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover shrink-0 bg-gray-100"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-gradient-to-br from-orange-100 to-red-100 flex items-center justify-center text-2xl shrink-0">
+                      {dish.category === '饮品' ? '🥤' : dish.category === '套餐' ? '🍱' : '🍽️'}
+                    </div>
+                  )}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-2">
                       <h3 className="font-medium text-gray-900 truncate">
